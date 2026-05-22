@@ -1,0 +1,248 @@
+{
+  "seed": 42,
+  "N": 20,
+  "elapsed_seconds": 21.351776838302612,
+  "convergence": {
+    "ring": {
+      "topology": "ring",
+      "N": 20,
+      "edges": 20,
+      "lambda_2": 0.09788696740969273,
+      "lambda_N": 4.0,
+      "spectral_gap_ratio": 0.024471741852423182,
+      "alpha_optimal": 0.48805640953640456,
+      "convergence_rate": 0.023887180927190842,
+      "diameter_estimate": 124,
+      "convergence_round": 154,
+      "final_drift": 0.006954708558862377,
+      "total_messages": 120000
+    },
+    "laman": {
+      "topology": "laman",
+      "N": 20,
+      "edges": 37,
+      "lambda_2": 0.8081755000873743,
+      "lambda_N": 8.6360692984851,
+      "spectral_gap_ratio": 0.09358140516880066,
+      "alpha_optimal": 0.2117691824657389,
+      "convergence_rate": 0.08557333247117148,
+      "diameter_estimate": 34,
+      "convergence_round": 575,
+      "final_drift": 0.00406145311387035,
+      "total_messages": 188000
+    },
+    "complete": {
+      "topology": "complete",
+      "N": 20,
+      "edges": 190,
+      "lambda_2": 19.99999999999997,
+      "lambda_N": 20.000000000000032,
+      "spectral_gap_ratio": 0.999999999999997,
+      "alpha_optimal": 0.05,
+      "convergence_rate": 0.4999999999999993,
+      "diameter_estimate": 5,
+      "convergence_round": 246,
+      "final_drift": 0.006995639623459449,
+      "total_messages": 800000
+    },
+    "small_world": {
+      "topology": "small_world",
+      "N": 20,
+      "edges": 40,
+      "lambda_2": 0.8963384427579338,
+      "lambda_N": 8.716244678494611,
+      "spectral_gap_ratio": 0.10283539251364167,
+      "alpha_optimal": 0.20806061958290714,
+      "convergence_rate": 0.09324636587809694,
+      "diameter_estimate": 31,
+      "convergence_round": 950,
+      "final_drift": 0.010890366344251723,
+      "total_messages": 200000
+    }
+  },
+  "byzantine": [
+    {
+      "f": 0,
+      "convergence_round": 575,
+      "final_drift": 0.00406145311387035,
+      "mean_drift": 0.0018493953593372136,
+      "messages": 188000,
+      "tolerable": true
+    },
+    {
+      "f": 1,
+      "convergence_round": null,
+      "final_drift": 0.06796002639310478,
+      "mean_drift": 0.01513884786905448,
+      "messages": 182000,
+      "tolerable": true
+    },
+    {
+      "f": 2,
+      "convergence_round": null,
+      "final_drift": 0.08460723593473735,
+      "mean_drift": 0.02689946303392827,
+      "messages": 176000,
+      "tolerable": true
+    },
+    {
+      "f": 3,
+      "convergence_round": null,
+      "final_drift": 0.17105004067610774,
+      "mean_drift": 0.0479889758987701,
+      "messages": 164000,
+      "tolerable": true
+    },
+    {
+      "f": 4,
+      "convergence_round": null,
+      "final_drift": 0.29856266799534975,
+      "mean_drift": 0.07449573047951538,
+      "messages": 156000,
+      "tolerable": true
+    },
+    {
+      "f": 5,
+      "convergence_round": null,
+      "final_drift": 0.25965601924431136,
+      "mean_drift": 0.08120091952509186,
+      "messages": 148000,
+      "tolerable": true
+    },
+    {
+      "f": 6,
+      "convergence_round": null,
+      "final_drift": 0.3710637160522561,
+      "mean_drift": 0.09701018006191235,
+      "messages": 142000,
+      "tolerable": true
+    }
+  ],
+  "scaling": {
+    "ring": [
+      {
+        "N": 5,
+        "convergence": 19
+      },
+      {
+        "N": 10,
+        "convergence": 893
+      },
+      {
+        "N": 15,
+        "convergence": 686
+      },
+      {
+        "N": 20,
+        "convergence": 154
+      },
+      {
+        "N": 30,
+        "convergence": 884
+      },
+      {
+        "N": 50,
+        "convergence": 1110
+      }
+    ],
+    "laman": [
+      {
+        "N": 5,
+        "convergence": 31
+      },
+      {
+        "N": 10,
+        "convergence": 142
+      },
+      {
+        "N": 15,
+        "convergence": 2654
+      },
+      {
+        "N": 20,
+        "convergence": 575
+      },
+      {
+        "N": 30,
+        "convergence": 1956
+      },
+      {
+        "N": 50,
+        "convergence": 3000
+      }
+    ],
+    "complete": [
+      {
+        "N": 5,
+        "convergence": 88
+      },
+      {
+        "N": 10,
+        "convergence": 36
+      },
+      {
+        "N": 15,
+        "convergence": 343
+      },
+      {
+        "N": 20,
+        "convergence": 246
+      },
+      {
+        "N": 30,
+        "convergence": 161
+      },
+      {
+        "N": 50,
+        "convergence": 449
+      }
+    ],
+    "small_world": [
+      {
+        "N": 5,
+        "convergence": 3000
+      },
+      {
+        "N": 10,
+        "convergence": 1145
+      },
+      {
+        "N": 15,
+        "convergence": 443
+      },
+      {
+        "N": 20,
+        "convergence": 950
+      },
+      {
+        "N": 30,
+        "convergence": 1373
+      },
+      {
+        "N": 50,
+        "convergence": 3000
+      }
+    ]
+  },
+  "election": {
+    "old_caller": 0,
+    "new_caller": 0,
+    "drift_before": 0.010619915176374062,
+    "drift_after": 0.005352828933594012,
+    "reconverged": true
+  },
+  "sunset": {
+    "edges_before": 37,
+    "edges_after": 35,
+    "drift_before": 0.005352828933594012,
+    "drift_after": 0.004434018978726306,
+    "constraint_preserved": true
+  },
+  "nash": {
+    "fleet_mean": 0.45546812877472453,
+    "max_drift": 0.00406145311387035,
+    "original_cost": 0.0010464337428384152,
+    "deviated_cost": 0.20104643374283848,
+    "is_nash": "True"
+  }
+}
