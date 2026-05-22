@@ -89,37 +89,66 @@ Code snippets everywhere but no complete working system. The lifecycle simulatio
 
 ---
 
-## GLM (Executor)
+## GLM-5.1 (Executor) — Late Submission Review
 
 ### Strengths
-- **None.** The submission is empty — a template with "[To be filled]" placeholders.
+- **"6 of 10 components already exist" is the strongest implementability claim.** GLM maps existing systems (OpenClaw heartbeat, PLATO rooms, constraint library, Pythagorean48, Laman topology) directly onto metronome roles. This isn't speculation — it's an audit of what's already running on eileen. No other submission does this inventory.
+- **"Five function calls, not a protocol" is the correct engineering instinct.** The data flow (read phase → compute expected → check deadband → execute task → write phase) is genuinely simple. It's the only submission where you can see the full hot path in under 10 lines.
+- **The executor's critique of others is mostly fair and often correct.** Opus's five-message-type election protocol IS overkill for N=9. DeepSeek's correction formula DOES obscure a simple weighted average. The "one integer, one rational, one deadband" minimal spec is genuinely useful as a design constraint.
+- **The philosophy is the best-written document in the competition.** "The constraint that works is the one you stop noticing" and "Power granted is more powerful than power forced" are not just metaphors — they map to concrete design decisions (boring infrastructure, cadence-caller-as-averager). The writing quality is genuinely high.
+- **The experimental grounding is unmatched.** 8 experiments, 5 proven, 3 repos pushed, 248 constraints validated. This isn't architecture — it's a lab report. The Laman 2N-3 proof for N=3..100, Pythagorean48 zero drift over 1,000 rotations, and 141 regime transitions are concrete results.
 
 ### Gaps
-- **Everything.** No architecture document, no implementation, no philosophy, no tensor-MIDI integration. The submission exists only as a file named SUBMISSION.md.
+- **The architecture doc stops at the data flow diagram.** Section 3 promises "The Metronome Protocol — Concrete Spec" but the file was cut at 150 lines. There's no actual protocol specification beyond the 5-function-call skeleton. Compare to Opus's 1,115 lines with message formats, state machines, and failure modes — GLM gives you a sketch, not a spec.
+- **No failure analysis whatsoever.** What happens when PLATO goes down? When the cadence caller crashes mid-election? When an agent's phase counter overflows? When WSL kernel panics (which GLM acknowledges happened!)? The philosophy says "boring means it works at 3 AM" but never specifies HOW it works at 3 AM.
+- **The executor's anti-theory stance is counterproductive.** "The proof doesn't matter if the system doesn't ship" is false for safety-critical systems. The whole point of proving convergence is knowing the system won't diverge in production. GLM's own Pythagorean48 experiment IS a proof — it proves zero drift empirically. Dismissing DeepSeek's spectral proof while running your own empirical proofs is incoherent. The correct stance is: prove first AND ship first. They're not contradictory.
+- **The "what's simpler" section is under-specified.** "Each agent broadcasts its phase (one integer, every tick)" — at what rate? Over what transport? With what consistency guarantees? Broadcast to whom? The simplification throws out the hard parts and calls the remaining skeleton an architecture.
+- **No scaling analysis.** The architecture works for N=9 with 15 Laman edges. What happens at N=50? N=100? The "five function calls" become O(N) broadcasts per tick. The deadband check becomes O(neighbors) per agent. None of this is analyzed.
 
-### Short-termism
-- **Total.** Whatever time was allocated for this submission was apparently not used.
+### The Executor's Critique of Others
 
-### Novel Contribution Rating: **0/10**
-Nothing submitted.
+**On Claude Opus:**
+- GLM says Opus's 1,115-line architecture needs 80% rewriting to be shippable. **Fair.** Opus's protocol-heavy approach does over-specify for the fleet's current scale.
+- GLM says the cadence-caller election should use heartbeat timeout + longest-uptime, not a 5-message voting protocol. **Fair for N=9, wrong for scaling.** Simple election works at fleet scale but provides no Byzantine tolerance.
+- GLM says Opus "thinks in protocols, I think in function calls." **This is the key tension.** Opus designs for the network boundary; GLM designs for the local execution path. Both are needed.
 
-### Implementability Rating: **0/10**
-Nothing to implement.
+**On DeepSeek:**
+- GLM translates DeepSeek's correction formula into 4 lines of Python and says "same thing, one ships." **Partially fair.** The implementations ARE equivalent, but GLM misses that DeepSeek's formalism enables analysis that the Python doesn't — you can derive convergence rates from the formalism, but not from the code.
+- GLM dismisses the proof as nice-for-papers. **Unfair.** The spectral proof tells you the system is stable before you run it. That's not academic — it's engineering safety.
+- GLM's own experimental results (Laman converges O(log N)) ARE the empirical validation of DeepSeek's theoretical prediction. They're on the same team and GLM doesn't realize it.
+
+**Is the critique fair?** Mostly yes on engineering tradeoffs, mostly no on theoretical value. The executor correctly identifies over-engineering but incorrectly dismisses the theoretical foundations that make engineering safe.
+
+### Novel Contribution Rating: **5/10**
+Nothing conceptually new. The "five function call" architecture is just a simplified version of Opus's design. The experimental results are real but they validate existing ideas (Laman rigidity, exact arithmetic), they don't introduce new ones. The philosophy is beautifully written but contains no architectural novelty. The honest assessment: GLM is the builder, not the inventor.
+
+### Implementability Rating: **8/10**
+Highest practical implementability after Opus. The component inventory (6/10 already built), the minimal data flow, and the existing experimental validation mean you could wire this up in a weekend. Loses points for no failure analysis, no scaling story, and the incomplete protocol spec.
+
+### What to Steal from GLM
+
+| From GLM | Steal | Why |
+|----------|-------|-----|
+| **GLM** | Component inventory mapping | Knowing that 6/10 components already exist changes the implementation calculus entirely |
+| **GLM** | "One integer, one rational, one deadband" minimal spec | Use as the design constraint for the hot path — everything else is optimization |
+| **GLM** | Longest-uptime election for N<10 | Pragmatic cadence-caller election for fleet-scale |
+| **GLM** | "Boring is a feature" design principle | Resists the temptation to over-engineer |
+| **GLM** | Executor-first critique pattern | Forces architects to justify complexity
 
 ---
 
 ## Overall Comparison
 
 ### Who has the best architecture? Why?
-**Claude Opus**, by a wide margin. The architecture is complete, layered, specified with message formats and state machines, backed by a working simulation, and organized into a 15-section document with appendices. It's the only submission that could serve as an engineering specification. DeepSeek has better theory but doesn't translate it into an implementable design.
+**Claude Opus**, still the most complete specification. But **GLM** forces a crucial correction: Opus's architecture can be simplified dramatically without losing essentials. GLM's "five function call" skeleton is the right starting point; Opus's full spec is the reference for edge cases. Build GLM's minimal version first, then add Opus's failure modes and protocol details as needed.
 
 ### Who has the best novel contribution? What is it?
-**DeepSeek**, for the PLL isomorphism. Recognizing that the metronome architecture is a distributed phase-locked loop isn't just a rebranding — it opens an entire engineering discipline (PLL theory: pull-in range, lock time, phase noise, hold-in range) that provides ready-made answers to questions the other submissions haven't even asked yet. The Nash equilibrium proof is a bonus.
+**DeepSeek**, for the PLL isomorphism — unchanged. GLM doesn't introduce new ideas; it validates existing ones empirically.
 
-Runner-up: **Seed-Pro** for "mined drift as diagnostic signal" — a genuine reframing that could change how the architecture is used in practice.
+Runner-up: **Seed-Pro** for "mined drift as diagnostic signal." GLM's experimental results (141 regime transitions) actually provide the raw data that Seed-Pro's drift mining would consume — they're complementary.
 
 ### Who has the most implementable design?
-**Claude Opus**, uncontested. Working Python simulation, JSON message formats, state machine tables, failure mode catalog, phased implementation roadmap, and parameter recommendations. This is production-adjacent.
+**Claude Opus** for completeness, **GLM** for speed. Opus gives you the full spec; GLM tells you 60% is already built and the hot path is 5 function calls. The right answer is: start with GLM's inventory and minimal flow, flesh out with Opus's failure analysis.
 
 ### What ideas should be stolen from each?
 
@@ -136,7 +165,10 @@ Runner-up: **Seed-Pro** for "mined drift as diagnostic signal" — a genuine ref
 | **Seed-Pro** | Mined drift as diagnostic signal | Reframes drift from cost to resource |
 | **Seed-Pro** | Five-layer lifecycle framing | Conceptually cleaner than treating protocols independently |
 | **Seed-Pro** | Smart GC analogy (mine-before-correct) | Concrete implementation pattern |
-| **GLM** | Nothing | Nothing to steal |
+| **GLM** | Component inventory (6/10 exist) | Half the system is already built — changes implementation timeline |
+| **GLM** | "One integer, one rational, one deadband" minimal spec | Design constraint for the hot path |
+| **GLM** | Longest-uptime election for N<10 | Pragmatic cadence-caller election for fleet-scale |
+| **GLM** | "Boring is a feature" design principle | Resists over-engineering |
 
 ### What's the synthesis that nobody has yet?
 
@@ -152,7 +184,9 @@ Claude Opus built the synchronization engine. DeepSeek proved it converges. Seed
 
 4. **The missing piece**: Nobody has proven that mining drift doesn't interfere with synchronization. If the diagnostic layer changes correction behavior based on mined patterns (e.g., "this agent always drifts on Mondays, so pre-correct"), it could create feedback loops. The deadband prevents cascading corrections, but a smart deadband that adapts based on mined patterns could break the convergence proof. This is the open problem.
 
-The synthesis is: **Build Claude Opus's architecture, prove it with DeepSeek's theory, add Seed-Pro's drift mining as a diagnostic layer, and prove that the diagnostic layer doesn't break the convergence guarantees.** Nobody has done that last step.
+The synthesis is: **Start with GLM's minimal skeleton (5 function calls, existing component inventory), build it out with Claude Opus's failure analysis and protocol details, prove stability with DeepSeek's theory, add Seed-Pro's drift mining as a diagnostic layer, and prove that the diagnostic layer doesn't break the convergence guarantees.** Nobody has done that last step.
+
+GLM's key addition to the synthesis: the implementation path is shorter than anyone thought. Six of ten components exist. The hot path is five function calls. This means the unified architecture can be running in days, not weeks — giving us a real system to test DeepSeek's convergence proofs against, and a real drift stream for Seed-Pro's diagnostic layer to mine.
 
 ---
 
